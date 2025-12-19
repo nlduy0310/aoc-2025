@@ -2,4 +2,5 @@
 
 ## Run
 
-- go run ./cmd/dayxx input.txt
+- `go run ./cmd/dayxx partone input.txt`
+- `go run ./cmd/dayxx parttwo input.txt`
