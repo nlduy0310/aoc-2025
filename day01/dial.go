@@ -1,6 +1,10 @@
 package day01
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/nlduy0310/aoc-2025/mathutils"
+)
 
 type dialRange struct {
 	start int
@@ -54,4 +58,36 @@ func (d *dial) rotate(r rotation) {
 	for d.currentValue < d.dialRange.start {
 		d.currentValue += rsize
 	}
+}
+
+func (d *dial) rotate_count_clicks(r rotation, val int) int {
+	rsize := d.dialRange.size()
+	absDist := mathutils.AbsInt(r.distance)
+	var sign int
+	if r.direction == Left {
+		sign = -1
+	} else {
+		sign = 1
+	}
+
+	clicks := absDist / rsize
+	remainingDist := absDist % rsize
+	next := d.currentValue + sign*remainingDist
+	if remainingDist != 0 && d.currentValue != val {
+		before := val - d.currentValue
+		after := val - next
+		prod := before * after
+		if prod <= 0 || next <= val-rsize || next >= val+rsize {
+			clicks++
+		}
+	}
+
+	if next > d.dialRange.end {
+		next -= rsize
+	} else if next < d.dialRange.start {
+		next += rsize
+	}
+	d.currentValue = next
+
+	return clicks
 }

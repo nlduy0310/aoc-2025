@@ -1,10 +1,8 @@
 package day01
 
-import (
-	"fmt"
-)
+import "fmt"
 
-func SolvePartOne(input string) (int, error) {
+func SolvePartTwo(input string) (int, error) {
 	rotations, err := parseRotations(input)
 	if err != nil {
 		return 0, fmt.Errorf("can not parse rotations from input file: %w", err)
@@ -17,10 +15,8 @@ func SolvePartOne(input string) (int, error) {
 
 	ret := 0
 	for _, rotation := range rotations {
-		d.rotate(rotation)
-		if d.currentValue == defaultClickTarget {
-			ret++
-		}
+		clicks := d.rotate_count_clicks(rotation, defaultClickTarget)
+		ret += clicks
 	}
 
 	return ret, nil
