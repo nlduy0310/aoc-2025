@@ -25,11 +25,11 @@ func minIntWithDigits(digits uint) int {
 	return int(math.Pow10(int(digits - 1)))
 }
 
-// SplitRangeByDigitsCount splits a range into sub-ranges where
+// splitRangeByDigitsCount splits a range into sub-ranges where
 // all elements in each resulting sub-range have the same digits count.
 //
 // This function assumes the range is non-negative.
-func SplitRangeByDigitsCount(r idrange.IdRange) []idrange.IdRange {
+func splitRangeByDigitsCount(r idrange.IdRange) []idrange.IdRange {
 	lowerDigitsCount := mathutils.CountDigits(r.LowerVal)
 	upperDigitsCount := mathutils.CountDigits(r.UpperVal)
 	if lowerDigitsCount == upperDigitsCount {

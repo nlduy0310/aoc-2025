@@ -24,7 +24,13 @@ func main() {
 			fmt.Printf("Part one result: %d\n", res)
 		}
 	case cli.PartTwo:
-		panic("part two not implemented")
+		{
+			res, err := day02.SolvePartTwo(*inp)
+			if err != nil {
+				log.Fatalf("failed to solve part two: %s", err)
+			}
+			fmt.Printf("Part two result: %d\n", res)
+		}
 	default:
 		panic("impossible state")
 
