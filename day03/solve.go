@@ -5,9 +5,13 @@ import (
 	"math"
 	"strings"
 
+	"github.com/nlduy0310/aoc-2025/datastructures/stack"
 	"github.com/nlduy0310/aoc-2025/day03/bank"
+	"github.com/nlduy0310/aoc-2025/day03/battery"
 	"github.com/nlduy0310/aoc-2025/mathutils"
 )
+
+const PART_TWO_BATTERIES_COUNT int = 12
 
 // getMaxBattery returns the index of the battery with the highest joltage
 // in the half-open interval [fromIdx, toIdx].
@@ -89,5 +93,40 @@ func SolvePartOne(inp string) (int, error) {
 }
 
 func SolvePartTwo(inp string) (int, error) {
-	panic("part two not implemented")
+	banks, err := parseInp(inp)
+	if err != nil {
+		return 0, err
+	}
+
+	sum := 0
+	for bankIdx, bank := range banks {
+		if bank.Size() < PART_TWO_BATTERIES_COUNT {
+			return 0, fmt.Errorf("expected bank %d to have at least %d batteries, got %d", bankIdx+1, PART_TWO_BATTERIES_COUNT, bank.Size())
+		}
+
+		removalCount := bank.Size() - PART_TWO_BATTERIES_COUNT
+		batteriesStack := stack.NewEmptyLinkedListStack[battery.Battery]()
+		for batIdx := 0; batIdx < bank.Size(); batIdx++ {
+			currentBat, _ := bank.BatteryAt(batIdx)
+			for lastBat, err := batteriesStack.Peek(); removalCount > 0 && err == nil && lastBat.Joltage < currentBat.Joltage; lastBat, err = batteriesStack.Peek() {
+				batteriesStack.Pop()
+				removalCount--
+			}
+			batteriesStack.Push(currentBat)
+		}
+		if batteriesStack.Size() < PART_TWO_BATTERIES_COUNT {
+			panic("impossible state")
+		}
+
+
+		num := 0
+		stackSize := batteriesStack.Size()
+		for i := stackSize - 1; i >= stackSize - PART_TWO_BATTERIES_COUNT; i-- {
+			bat, _ := batteriesStack.GetAt(i)
+			num = num * 10 + bat.Joltage
+		}
+		sum += num
+	}
+
+	return sum, nil
 }
