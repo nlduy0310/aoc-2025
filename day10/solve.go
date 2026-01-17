@@ -1,9 +1,11 @@
 package day10
 
 import (
+	"errors"
 	"fmt"
 	"slices"
 	"strings"
+	"sync"
 
 	"github.com/nlduy0310/aoc-2025/datastructures/queue"
 	"github.com/nlduy0310/aoc-2025/day10/button"
@@ -102,15 +104,39 @@ func SolvePartOne(input string) (int, error) {
 		return 0, fmt.Errorf("can not parse input: %w", err)
 	}
 
-	ret := 0
+	type result struct {
+		data int
+		err  error
+	}
+	var wg sync.WaitGroup
+	resChan := make(chan result)
 	for lineIdx, lineData := range linesData {
-		presses, err := optimalPresses(lineData.targetLightsState, lineData.buttons)
-		if err != nil {
-			return 0, fmt.Errorf("failed to solve line %d: %w", lineIdx+1, err)
-		}
-		ret += presses
+		wg.Add(1)
+		go func(lineIdx int, data inputLine) {
+			defer wg.Done()
+			presses, err := optimalPresses(data.targetLightsState, data.buttons)
+			resChan <- result{data: presses, err: err}
+		}(lineIdx, lineData)
 	}
 
+	go func() {
+		wg.Wait()
+		close(resChan)
+	}()
+
+	ret := 0
+	errs := make([]error, 0)
+	for res := range resChan {
+		if res.err != nil {
+			errs = append(errs, err)
+		} else {
+			ret += res.data
+		}
+	}
+
+	if len(errs) > 0 {
+		return 0, errors.Join(errs...)
+	}
 	return ret, nil
 }
 
