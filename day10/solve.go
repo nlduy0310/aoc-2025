@@ -292,13 +292,13 @@ func solveLinePartTwo(buttons []vector.Vector, target vector.Vector) (int, error
 	if len(parityCombs) == 0 {
 		return 0, fmt.Errorf("can not find any combs for parity mask %s", parityMask.String())
 	}
-	for _, parityCombs := range parityCombs {
+	for _, parityComb := range parityCombs {
 		var remainder *vector.Vector
-		if len(parityCombs) == 0 {
+		if len(parityComb) == 0 {
 			tmp := target.Clone()
 			remainder = &tmp
 		} else {
-			remainder, _ = vector.Sub(target, addMany(parityCombs))
+			remainder, _ = vector.Sub(target, addMany(parityComb))
 		}
 		if isNegative(*remainder) {
 			continue
@@ -308,7 +308,7 @@ func solveLinePartTwo(buttons []vector.Vector, target vector.Vector) (int, error
 		if err != nil {
 			continue
 		}
-		if presses := len(parityCombs) + 2*n; presses < ret {
+		if presses := len(parityComb) + 2*n; presses < ret {
 			ret = presses
 			found = true
 		}
