@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/nlduy0310/aoc-2025/day10/lightdiagram"
+	"github.com/nlduy0310/aoc-2025/day10/vector"
 )
 
 type Button struct {
@@ -56,4 +57,12 @@ func (b Button) Flip(ld lightdiagram.LightDiagram) error {
 	}
 
 	return nil
+}
+
+func (b Button) Vector(size int) vector.Vector {
+	elements := make([]int, size)
+	for _, lightIdx := range b.indicatorLights {
+		elements[lightIdx] = 1
+	}
+	return vector.New(elements)
 }
